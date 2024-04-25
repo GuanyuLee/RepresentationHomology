@@ -317,7 +317,7 @@ SurfaceRepHomologyLie(ZZ, ZZ) := opts -> (matrixSize, genusOfSurface) -> (
     (X, Y) := makeMatricesLie(n, g, CoefficientRing => opts.CoefficientRing, LieType => opts.LieType, Variables => opts.Variables);
 
     -- the matrix for the complex
-    M := product for k from 0 to g-1 list (X_k * Y_k - Y_k * X_k);
+    M := sum for k from 0 to g-1 list (X_k * Y_k - Y_k * X_k);
 
     -- construct the koszul complex
     C := RepHomologyChainLie(M, n, g, LieType => opts.LieType);
