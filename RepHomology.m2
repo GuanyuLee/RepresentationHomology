@@ -1,11 +1,11 @@
 -*
-   Copyright 2024, -.
+   Copyright 2024, .
 *-
 
 newPackage(
     "RepHomology",
     Version => "0.2",
-    Date => ", 2024",
+    Date => "May, 2024",
     Authors => {
 	{Name => "Guanyu Li", Email => "gl479@cornell.edu", HomePage => "https://sites.google.com/view/guanyu-li-math/home"}},
     Headline => "-",
@@ -17,11 +17,10 @@ newPackage(
 
 export { -- methods
     "SurfaceRepHomologyGroup",
-    "SurfaceRepHomologyLie",
-    "makeMatricesLie", -- only for a test
+    "SurfaceRepHomologyAlg",
     -- types
     "GroupType",
-    "LieType",
+    "AlgType",
     "Homogenize"
     }
 
@@ -232,21 +231,21 @@ SurfaceRepHomologyGroup(ZZ, ZZ) := opts -> (matrixSize, genusOfSurface) -> (
 )
 
 ----------------------------------------------------
---Lie algebra version of representation homology of surfaces
+--Algebra version of representation homology of surfaces
 ----------------------------------------------------
 
-makeMatricesLie = method (Options => {
+makeMatricesAlg = method (Options => {
         Homogenize => false,
         CoefficientRing => QQ,
-        LieType => "gl",
+        AlgType => "gl",
         Variables => {getSymbol "x", getSymbol "y"}
         })
-makeMatricesLie(ZZ, ZZ) := (List, List) => opts -> (matrixSize, genus) -> (
+makeMatricesAlg(ZZ, ZZ) := (List, List) => opts -> (matrixSize, genus) -> (
     n := matrixSize;
     g := genus;
     variables := opts.Variables;
     local XX; local YY; local XDeg; local YDeg; local S; local T; local SDeg; local TDeg; local R; local X; local Y; local M; local N; local I; local Xnew; local Ynew;
-    if opts.LieType == "gl" then (
+    if opts.AlgType == "gl" then (
         -- make lists of variables
         XX = flatten for k from 1 to g list
             flatten for i from 1 to n list for j from 1 to n list (variables_0)_(k,i,j);
@@ -262,9 +261,9 @@ makeMatricesLie(ZZ, ZZ) := (List, List) => opts -> (matrixSize, genus) -> (
 
         (Xnew, Ynew) = (X, Y);
     )
-    else if opts.LieType == "sl" then (
+    else if opts.AlgType == "sl" then (
     )
-    else if (opts.LieType == "n") or (opts.LieType == "nilpotent") then (
+    else if (opts.AlgType == "n") or (opts.AlgType == "nilpotent") then (
         -- make lists of variables
         XX = flatten for k from 1 to g list
             flatten for i from 1 to n list for j from i+1 to n list (variables_0)_(k,i,j);
@@ -289,38 +288,38 @@ makeMatricesLie(ZZ, ZZ) := (List, List) => opts -> (matrixSize, genus) -> (
         Y = for k from 1 to g list matrix table (n, n, (i,j) -> (if i<j then ((variables_1)_(k,i+1,j+1))_R else 0));
 
         (Xnew, Ynew) = (X, Y);
-    ) else if (opts.LieType == "b") or (opts.LieType == "borel") then (
-    ) else error "The Lie algebra type is not supported.";
+    ) else if (opts.AlgType == "b") or (opts.AlgType == "borel") then (
+    ) else error "The algebra type is not supported.";
     (Xnew, Ynew)
 )
 
-RepHomologyChainLie = method (Options => {
-        LieType => "gl"
+RepHomologyChainAlg = method (Options => {
+        AlgType => "gl"
         })
-RepHomologyChainLie(Matrix, ZZ, ZZ) := ChainComplex => opts -> (M, matrixSize, genusOfSurface) -> (
+RepHomologyChainAlg(Matrix, ZZ, ZZ) := ChainComplex => opts -> (M, matrixSize, genusOfSurface) -> (
     n := matrixSize;
     g := genusOfSurface;
-    if opts.LieType == "gl" then (
+    if opts.AlgType == "gl" then (
     )
-    else if (opts.LieType == "n") or (opts.LieType == "nilpotent") then (
+    else if (opts.AlgType == "n") or (opts.AlgType == "nilpotent") then (
         return koszul matrix {flatten for i from 0 to n-1 list
             for j from i+1 to n-1 list M_(i,j)};
     )
-    else if (opts.LieType == "b") or (opts.LieType == "borel") then (
-    ) else error "The group type is not supported.";
+    else if (opts.AlgType == "b") or (opts.AlgType == "borel") then (
+    ) else error "The algebra type is not supported.";
 )
 
-SurfaceRepHomologyLie = method (Options => options makeMatricesLie)
-SurfaceRepHomologyLie(ZZ, ZZ) := opts -> (matrixSize, genusOfSurface) -> (
+SurfaceRepHomologyAlg = method (Options => options makeMatricesAlg)
+SurfaceRepHomologyAlg(ZZ, ZZ) := opts -> (matrixSize, genusOfSurface) -> (
     n := matrixSize; g := genusOfSurface;
     -- construct the matrices
-    (X, Y) := makeMatricesLie(n, g, CoefficientRing => opts.CoefficientRing, LieType => opts.LieType, Variables => opts.Variables);
+    (X, Y) := makeMatricesAlg(n, g, CoefficientRing => opts.CoefficientRing, AlgType => opts.AlgType, Variables => opts.Variables);
 
     -- the matrix for the complex
     M := sum for k from 0 to g-1 list (X_k * Y_k - Y_k * X_k);
 
     -- construct the koszul complex
-    C := RepHomologyChainLie(M, n, g, LieType => opts.LieType);
+    C := RepHomologyChainAlg(M, n, g, AlgType => opts.AlgType);
 
     -- print the result
     printKoszulHH(C)
