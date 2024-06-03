@@ -99,7 +99,7 @@ makeMatricesGroup(ZZ, ZZ) := (List, List) => opts -> (matrixSize, genusOfSurface
         Xnew = for x in X list sub(x,R/I);
         Ynew = for y in Y list sub(y,R/I);
     )
-    else if (opts.GroupType == "U") or (opts.GroupType == "Unipotent") then ( -- Unipotent groups
+    else if (opts.GroupType == "U") or (opts.GroupType == "Unipotent")  or (opts.GroupType == "AnUnipotent") then ( -- Unipotent groups
         -- make lists of variables
         XX = flatten for k from 1 to g list
             flatten for i from 1 to n list for j from i+1 to n list (variables_0)_(k,i,j);
@@ -169,10 +169,10 @@ makeMatricesGroup(ZZ, ZZ) := (List, List) => opts -> (matrixSize, genusOfSurface
     (Xnew, Ynew)
     )
 
-RepHomologyChainGroup = method (Options => {
+repHomologyChainGroup = method (Options => {
         GroupType => "GL"
         })
-RepHomologyChainGroup(Matrix, ZZ, ZZ) := ChainComplex => opts -> (M, matrixSize, genusOfSurface) -> (
+repHomologyChainGroup(Matrix, ZZ, ZZ) := ChainComplex => opts -> (M, matrixSize, genusOfSurface) -> (
     n := matrixSize;
     g := genusOfSurface;
     if opts.GroupType == "GL" then (
@@ -214,8 +214,8 @@ n : size of matrices
 g : genus of the commuting variety
 Group : type of the group scheme, a string, including "B", "Borel", "U", "Unipotent", "GL" and "SL"
 *-
-SurfaceRepHomologyGroup = method (Options => options makeMatricesGroup)
-SurfaceRepHomologyGroup(ZZ, ZZ) := opts -> (matrixSize, genusOfSurface) -> (
+surfaceRepHomologyGroup = method (Options => options makeMatricesGroup)
+surfaceRepHomologyGroup(ZZ, ZZ) := opts -> (matrixSize, genusOfSurface) -> (
     n := matrixSize; g := genusOfSurface;
     -- construct the matrices
     (X, Y) := makeMatricesGroup(n, g, CoefficientRing => opts.CoefficientRing, GroupType => opts.GroupType, Variables => opts.Variables);
@@ -309,8 +309,8 @@ RepHomologyChainAlg(Matrix, ZZ, ZZ) := ChainComplex => opts -> (M, matrixSize, g
     ) else error "The algebra type is not supported.";
 )
 
-SurfaceRepHomologyAlg = method (Options => options makeMatricesAlg)
-SurfaceRepHomologyAlg(ZZ, ZZ) := opts -> (matrixSize, genusOfSurface) -> (
+surfaceRepHomologyAlg = method (Options => options makeMatricesAlg)
+surfaceRepHomologyAlg(ZZ, ZZ) := opts -> (matrixSize, genusOfSurface) -> (
     n := matrixSize; g := genusOfSurface;
     -- construct the matrices
     (X, Y) := makeMatricesAlg(n, g, CoefficientRing => opts.CoefficientRing, AlgType => opts.AlgType, Variables => opts.Variables);
