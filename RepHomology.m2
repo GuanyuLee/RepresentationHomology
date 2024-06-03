@@ -16,8 +16,8 @@ newPackage(
     )
 
 export { -- methods
-    "SurfaceRepHomologyGroup",
-    "SurfaceRepHomologyAlg",
+    "surfaceRepHomologyGroup",
+    "surfaceRepHomologyAlg",
     -- types
     "GroupType",
     "AlgType",
@@ -99,7 +99,7 @@ makeMatricesGroup(ZZ, ZZ) := (List, List) => opts -> (matrixSize, genusOfSurface
         Xnew = for x in X list sub(x,R/I);
         Ynew = for y in Y list sub(y,R/I);
     )
-    else if (opts.GroupType == "U") or (opts.GroupType == "Unipotent")  or (opts.GroupType == "AnUnipotent") then ( -- Unipotent groups
+    else if (opts.GroupType == "U") or (opts.GroupType == "Unipotent") or (opts.GroupType == "AnUnipotent") then ( -- Unipotent groups
         -- make lists of variables
         XX = flatten for k from 1 to g list
             flatten for i from 1 to n list for j from i+1 to n list (variables_0)_(k,i,j);
@@ -181,7 +181,7 @@ repHomologyChainGroup(Matrix, ZZ, ZZ) := ChainComplex => opts -> (M, matrixSize,
     )
     else if opts.GroupType == "SL" then(
     )
-    else if (opts.GroupType == "U") or (opts.GroupType == "Unipotent") then (
+    else if (opts.GroupType == "U") or (opts.GroupType == "Unipotent") or (opts.GroupType == "AnUnipotent") then (
         return koszul matrix {flatten for i from 0 to n-1 list
             for j from i+1 to n-1 list M_(i,j)};
     )
@@ -224,7 +224,7 @@ surfaceRepHomologyGroup(ZZ, ZZ) := opts -> (matrixSize, genusOfSurface) -> (
     M := product for k from 0 to g-1 list (X_k * Y_k * inverse(X_k) * inverse(Y_k));
 
     -- construct the koszul complex
-    C := RepHomologyChainGroup(M, n, g, GroupType => opts.GroupType);
+    C := repHomologyChainGroup(M, n, g, GroupType => opts.GroupType);
 
     -- print the result
     printKoszulHH(C)
@@ -293,10 +293,10 @@ makeMatricesAlg(ZZ, ZZ) := (List, List) => opts -> (matrixSize, genus) -> (
     (Xnew, Ynew)
 )
 
-RepHomologyChainAlg = method (Options => {
+repHomologyChainAlg = method (Options => {
         AlgType => "gl"
         })
-RepHomologyChainAlg(Matrix, ZZ, ZZ) := ChainComplex => opts -> (M, matrixSize, genusOfSurface) -> (
+repHomologyChainAlg(Matrix, ZZ, ZZ) := ChainComplex => opts -> (M, matrixSize, genusOfSurface) -> (
     n := matrixSize;
     g := genusOfSurface;
     if opts.AlgType == "gl" then (
@@ -319,7 +319,7 @@ surfaceRepHomologyAlg(ZZ, ZZ) := opts -> (matrixSize, genusOfSurface) -> (
     M := sum for k from 0 to g-1 list (X_k * Y_k - Y_k * X_k);
 
     -- construct the koszul complex
-    C := RepHomologyChainAlg(M, n, g, AlgType => opts.AlgType);
+    C := repHomologyChainAlg(M, n, g, AlgType => opts.AlgType);
 
     -- print the result
     printKoszulHH(C)
