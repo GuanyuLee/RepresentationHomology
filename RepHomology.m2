@@ -172,21 +172,21 @@ makeMatricesGroup(ZZ, ZZ) := (List, List) => opts -> (matrixSize, genusOfSurface
 repHomologyChainGroup = method (Options => {
         GroupType => "GL"
         })
-repHomologyChainGroup(Matrix, ZZ, ZZ) := ChainComplex => opts -> (M, matrixSize, genusOfSurface) -> (
+repHomologyChainGroup(Matrix, ZZ, ZZ) := Complex => opts -> (M, matrixSize, genusOfSurface) -> (
     n := matrixSize;
     g := genusOfSurface;
     if opts.GroupType == "GL" then (
-        return koszul matrix {flatten for i from 0 to n-1 list
+        return koszulComplex matrix {flatten for i from 0 to n-1 list
             for j from 0 to n-1 list if i==j then M_(i,j)-1 else M_(i,j)};
     )
     else if opts.GroupType == "SL" then(
     )
     else if (opts.GroupType == "U") or (opts.GroupType == "Unipotent") or (opts.GroupType == "AnUnipotent") then (
-        return koszul matrix {flatten for i from 0 to n-1 list
+        return koszulComplex matrix {flatten for i from 0 to n-1 list
             for j from i+1 to n-1 list M_(i,j)};
     )
     else if (opts.GroupType == "B") or (opts.GroupType == "Borel") then (
-        return koszul matrix {flatten for i from 0 to n-1 list
+        return koszulComplex matrix {flatten for i from 0 to n-1 list
             for j from i to n-1 list if i==j then M_(i,j)-1 else M_(i,j)};
     ) else error "The group type is not supported.";
 )
@@ -197,7 +197,7 @@ print the homology group of a Koszul complex
 Warning : the function is valid for non-Koszul complexes, however it stops when the first time the homology is 0
 *-
 printKoszulHH = method ()
-printKoszulHH(ChainComplex) := C -> (
+printKoszulHH(Complex) := C -> (
     local H; local D;
     H = for i from 0 to (length C) list (
         D = prune HH(i,C);
@@ -296,13 +296,13 @@ makeMatricesAlg(ZZ, ZZ) := (List, List) => opts -> (matrixSize, genus) -> (
 repHomologyChainAlg = method (Options => {
         AlgType => "gl"
         })
-repHomologyChainAlg(Matrix, ZZ, ZZ) := ChainComplex => opts -> (M, matrixSize, genusOfSurface) -> (
+repHomologyChainAlg(Matrix, ZZ, ZZ) := Complex => opts -> (M, matrixSize, genusOfSurface) -> (
     n := matrixSize;
     g := genusOfSurface;
     if opts.AlgType == "gl" then (
     )
     else if (opts.AlgType == "n") or (opts.AlgType == "nilpotent") then (
-        return koszul matrix {flatten for i from 0 to n-1 list
+        return koszulComplex matrix {flatten for i from 0 to n-1 list
             for j from i+1 to n-1 list M_(i,j)};
     )
     else if (opts.AlgType == "b") or (opts.AlgType == "borel") then (
