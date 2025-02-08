@@ -5,7 +5,7 @@
 newPackage(
     "RepHomology",
     Version => "1.0",
-    Date => "December, 2024",
+    Date => "Feb, 2024",
     Authors => {
 	{Name => "Guanyu Li", Email => "gl479@cornell.edu", HomePage => "https://sites.google.com/view/guanyu-li-math/home"}},
     Headline => "Representation Homology",
@@ -835,7 +835,10 @@ doc ///
         a package for computing representation homology of certain topological spaces
     Description
         Text
-            This package {\em RepHomology} provides direct computation of representation homology of certain spaces, such as surfaces and link (complements). Some analogies can be computed as well.
+            This package {\em RepHomology} provides direct computation of representation homology of certain spaces, such as surfaces and link (complements in $\mathbb{R}^3$). Some analogies can be computed as well.
+
+            The representation homology is the algebraic information of the equivalent derived objects which are so-called derived local systems, or derived representation schemes. Please see @HREF("https://arxiv.org/abs/2403.13953", "this article")@ for more detailed introduction, the complex to perform the computation, and the theoretical definitions.
+            
             We also provide a new type @TO Link @ with basic operations of topological link (complements).
 
             {\bf Authors}:
@@ -843,7 +846,14 @@ doc ///
 
             {\bf Other acknowledgements}:
                 Many methods were discussed with Mike Stillman, and there are many useful suggestions implemented in this package.
-            ----TODO
+
+            Some examples of the functions included in the package :
+        Example
+            surfaceRepHomologyGroup(2, 1)
+            surfaceRepHomologyAlg(2, 1)
+            torusRepHomologyLie(2)
+            linkRepHomology(Trefoil, 3, GroupType=>"Unipotent")
+            
     SeeAlso
         surfaceRepHomologyGroup
         surfaceRepHomologyAlg
@@ -858,15 +868,40 @@ doc ///
         a type to represent a link complement in $\mathbb{R}^3$
     Description
         Text
-            This class is a type of @TO "HashTable"@ which represents a link complement in $\mathbb{R}^3$.
+            This class is a type of @TO "HashTable"@ which represents a link complement in $\mathbb{R}^3$. We use braid word presentation to memorize a link in $\mathbb{R}^3$ in this package.
+
+            See Chapter 1 of @HREF("https://link.springer.com/book/10.1007/978-1-4612-0691-0","\"An Introduction to Knot Theory\"")@ by W. B. Raymond Lickorish for more information about links, and braid groups. See @HREF("https://doi.org/10.2307/1971403","\"Hecke algebra representations of braid groups and link polynomials\"")@ Table 15.9 by V. F. R. Jones for a list of knots by braid words.
+
+            To construct a link,
         Example
             L = link (2, {1,1,1});
             L = link (1, {}); -- Unknot
+        Text
+            To get the information of a given link, 
+        Example
+            braidIndex(Trefoil)
+            word(Trefoil)
     SeeAlso
         link
         (isWellDefined, Link)
         Trefoil
         FigureEight
+        word
+        braidIndex
+///
+
+doc /// 
+    Key
+        BraidIndex
+    Headline
+        protected number denoting the braid index of a link
+    Description
+        Text
+            This is an integer memorizing the braid index of a Link object. This integer is protected.
+        Example
+            braidIndex(FigureEight)
+    SeeAlso
+        braidIndex
 ///
 
 doc /// 
@@ -883,13 +918,27 @@ doc ///
         n : ZZ
     Description
         Text
-            This is the function returning the braid index of a Link object.
+            This is the function returning the braid index of a Link object. To get the braid index, see this
         Example
             braidIndex(FigureEight)
     SeeAlso
         link
         Trefoil
         FigureEight
+///
+
+doc /// 
+    Key
+        LinkWord
+    Headline
+        protected list denoting the link word of a link
+    Description
+        Text
+            This is a list memorizing the braid index of a Link object. This list is protected. To get the link word, see this
+        Example
+            word(FigureEight)
+    SeeAlso
+        word
 ///
 
 doc /// 
@@ -903,7 +952,7 @@ doc ///
     Inputs
         L : Link
     Outputs
-        w : List
+        w : List -- The list of braid word
     Description
         Text
             This is the function returning the braid word of a Link object.
@@ -987,7 +1036,7 @@ doc ///
     SeeAlso
         Link
 ///
-
+--here
 doc ///
     Key
         GroupType
@@ -995,7 +1044,7 @@ doc ///
         an optional argument
     Description
         Text
-            A symbol used as the name of an optional argument.
+            A symbol used as the name of an optional argument, for the choice of group type.
     SeeAlso
         surfaceRepHomologyGroup
         surfaceRepHomologyComplexGroup
@@ -1009,7 +1058,7 @@ doc ///
         an optional argument
     Description
         Text
-            A symbol used as the name of an optional argument.
+            A symbol used as the name of an optional argument, for the choice of algebra type.
     SeeAlso
         surfaceRepHomologyAlg
         surfaceRepHomologyComplexAlg
@@ -1022,7 +1071,7 @@ doc ///
         an optional argument
     Description
         Text
-            A symbol used as the name of an optional argument.
+            A symbol used as the name of an optional argument, for the choice of Lie algebra type.
     SeeAlso
         torusRepHomologyLie
         torusRepHomologyComplexLie
@@ -1035,7 +1084,7 @@ doc ///
         an optional argument
     Description
         Text
-            A symbol used as the name of an optional argument.
+            A symbol used as the name of an optional argument, to change certain types being homogeneous or not.
     SeeAlso
         surfaceRepHomologyGroup
         surfaceRepHomologyAlg
@@ -1055,11 +1104,13 @@ doc ///
         matrixSize : ZZ
         genus : ZZ
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
              This is the function to compute group type representation homology of surface directly. There are two inputs, the size of matrices $n$ and the genus $g$ of the surface.
              One could also change the coefficient ring and the group type. A group type could be "GL" (default), "SL", "Borel" ("B" for short), or "Unipotent" ("U" for short).
+
+            The representation homology is the algebraic information of the equivalent derived objects which are so-called derived local systems, or derived representation schemes. Please see @HREF("https://arxiv.org/abs/2403.13953", "this article")@ for more detailed introduction, the complex to perform the computation, and the theoretical definitions.
         Example
             surfaceRepHomologyGroup(2, 1)
             surfaceRepHomologyGroup(2, 1, GroupType=>"B")
@@ -1081,11 +1132,13 @@ doc ///
         matrixSize : ZZ
         genus : ZZ
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
              This is the function to return the chain complex computing the group type representation homology of surface. There are two inputs, the size of matrices 'matrixSize' and the genus 'genus' of the surface.
              One could also change the coefficient ring and the group type. A group type could be "GL" (default), "SL", "Borel" ("B" for short), or "Unipotent" ("U" for short).
+
+            The representation homology is the algebraic information of the equivalent derived objects which are so-called derived local systems, or derived representation schemes. Please see @HREF("https://arxiv.org/abs/2403.13953", "this article")@ for more detailed introduction, the complex to perform the computation, and the theoretical definitions.
         Example
             surfaceRepHomologyComplexGroup(2, 1)
             surfaceRepHomologyComplexGroup(2, 1, GroupType=>"B")
@@ -1106,7 +1159,7 @@ doc ///
         genus : ZZ
         s : String
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
             This is the option to change the group type coefficient. A group type could be "GL" (default), "SL", "Borel" ("B" for short), or "Unipotent" ("U" for short).
@@ -1126,7 +1179,7 @@ doc ///
         genus : ZZ
         s : String
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
             This is the option to change the group type coefficient. A group type could be "GL" (default), "SL", "Borel" ("B" for short), or "Unipotent" ("U" for short).
@@ -1146,7 +1199,7 @@ doc ///
         genus : ZZ
         kk : Ring
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
             This is the option to change the ground ring of the group type coefficient. The default value is $\mathbb{Q}$.
@@ -1166,7 +1219,7 @@ doc ///
         genus : ZZ
         kk : Ring
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
             This is the option to change the ground ring of the group type coefficient. The default value is $\mathbb{Q}$.
@@ -1186,7 +1239,7 @@ doc ///
         genus : ZZ
         B : Boolean
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
             When the group type is Borel or unipotent, the group coefficient could be set homogeneous. This is the option to set whether the group coefficient is homogeneous, i.e. whether the ideal to cut out the variety given by the group is homogeneous.
@@ -1206,12 +1259,54 @@ doc ///
         genus : ZZ
         B : Boolean
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
             When the group type is Borel or unipotent, the group coefficient could be set homogeneous. This is the option to set whether the group coefficient is homogeneous, i.e. whether the ideal to cut out the variety given by the group is homogeneous.
         Example
             surfaceRepHomologyComplexGroup(3, 1, GroupType=>"U", Homogenize=>true)
+///
+
+doc ///
+    Key
+        [surfaceRepHomologyGroup, Variables]
+    Headline
+        Option to change the variable names in matrices
+    Usage
+        lst =  surfaceRepHomologyGroup(matrixSize, genus, Variables=>L)
+    Inputs
+        matrixSize : ZZ
+        genus : ZZ
+        L : List -- Default {getSymbol "x", getSymbol "y", getSymbol "s", getSymbol "t"}
+    Outputs
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
+    Description
+        Text
+            This is the option to change the variable names in the matrices.
+            {\em We do NOT suggest to use this option unless it causes huge confusion.}
+        Example
+            surfaceRepHomologyGroup(3, 1, GroupType=>"U", Variables=>{a,b,c,d})
+///
+
+doc ///
+    Key
+        [surfaceRepHomologyComplexGroup, Variables]
+    Headline
+        Option to change the variable names in matrices
+    Usage
+        C =  surfaceRepHomologyComplexGroup(matrixSize, genus, Variables=>L)
+    Inputs
+        matrixSize : ZZ
+        genus : ZZ
+        L : List -- Default {getSymbol "x", getSymbol "y", getSymbol "s", getSymbol "t"}
+    Outputs
+        C : Complex -- A complex whose homology groups are the representation homology groups
+    Description
+        Text
+            This is the option to change the variable names in the matrices.
+            {\em We do NOT suggest to use this option unless it causes huge confusion.}
+        Example
+            surfaceRepHomologyComplexGroup(3, 1, GroupType=>"U", Variables=>{a,b,c,d})
 ///
 
 doc ///
@@ -1226,11 +1321,13 @@ doc ///
         matrixSize : ZZ
         genus : ZZ
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
              This is the function to compute algebra type representation homology of a surface directly. There are two inputs, the size of matrices $n$ and the genus $g$ of the surface.
              One could also change the coefficient ring and the algebra type. A algebra type could be "gl" (default), "sl", "borel" ("b" for short), or "nilpotent" ("n" for short).
+
+            The representation homology is the algebraic information of the equivalent derived objects which are so-called derived local systems, or derived representation schemes. Please see @HREF("https://arxiv.org/abs/2403.13953", "this article")@ for more detailed introduction, the complex to perform the computation, and the theoretical definitions.
         Example
             surfaceRepHomologyAlg(2, 1)
             surfaceRepHomologyAlg(2, 1, AlgType=>"b")
@@ -1253,11 +1350,13 @@ doc ///
         matrixSize : ZZ
         genus : ZZ
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
              This is the function to return the chain complex computing the algebra type representation homology of a surface. There are two inputs, the size of matrices $n$ and the genus $g$ of the surface.
              One could also change the coefficient ring and the algebra type. A algebra type could be "gl" (default), "sl", "borel" ("b" for short), or "nilpotent" ("n" for short).
+
+            The representation homology is the algebraic information of the equivalent derived objects which are so-called derived local systems, or derived representation schemes. Please see @HREF("https://arxiv.org/abs/2403.13953", "this article")@ for more detailed introduction, the complex to perform the computation, and the theoretical definitions.
         Example
             surfaceRepHomologyComplexAlg(2, 1)
             surfaceRepHomologyComplexAlg(2, 1, AlgType=>"b")
@@ -1280,7 +1379,7 @@ doc ///
         genus : ZZ
         s : String
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
             This is the option to change the algebra type coefficient. An algebra type could be "gl" (default), "sl", "borel" ("b" for short), or "nilpotent" ("n" for short).
@@ -1300,7 +1399,7 @@ doc ///
         genus : ZZ
         s : String
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
             This is the option to change the algebra type coefficient. An algebra type could be "gl" (default), "sl", "borel" ("b" for short), or "nilpotent" ("n" for short).
@@ -1320,7 +1419,7 @@ doc ///
         genus : ZZ
         kk : Ring
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
             This is the option to change the ground ring of the algebra type coefficient. The default value is $\mathbb{Q}$.
@@ -1340,7 +1439,7 @@ doc ///
         genus : ZZ
         kk : Ring
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
             This is the option to change the ground ring of the algebra type coefficient. The default value is $\mathbb{Q}$.
@@ -1360,7 +1459,7 @@ doc ///
         genus : ZZ
         B : Boolean
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
             When the algebra type is Borel or nilpotent, the algebra coefficient could be set homogeneous. This is the option to set whether the algebra coefficient is homogeneous, i.e. whether the ideal to cut out the variety given by the algebra is homogeneous.
@@ -1380,12 +1479,54 @@ doc ///
         genus : ZZ
         B : Boolean
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
             When the algebra type is Borel or unipotent, the algebra coefficient could be set homogeneous. This is the option to set whether the algebra coefficient is homogeneous, i.e. whether the ideal to cut out the variety given by the algebra is homogeneous.
         Example
             surfaceRepHomologyComplexAlg(3, 1, AlgType=>"n", Homogenize=>true)
+///
+
+doc ///
+    Key
+        [surfaceRepHomologyAlg, Variables]
+    Headline
+        Option to change the variable names in matrices
+    Usage
+        lst =  surfaceRepHomologyAlg(matrixSize, genus, Variables=>L)
+    Inputs
+        matrixSize : ZZ
+        genus : ZZ
+        L : List -- Default {getSymbol "x", getSymbol "y", getSymbol "s", getSymbol "t"}
+    Outputs
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
+    Description
+        Text
+            This is the option to change the variable names in the matrices.
+            {\em We do NOT suggest to use this option unless it causes huge confusion.}
+        Example
+            surfaceRepHomologyAlg(3, 1, AlgType=>"n", Variables=>{a,b,c,d})
+///
+
+doc ///
+    Key
+        [surfaceRepHomologyComplexAlg, Variables]
+    Headline
+        Option to change the variable names in matrices
+    Usage
+        C =  surfaceRepHomologyComplexAlg(matrixSize, genus, Variables=>L)
+    Inputs
+        matrixSize : ZZ
+        genus : ZZ
+        L : List -- Default {getSymbol "x", getSymbol "y", getSymbol "s", getSymbol "t"}
+    Outputs
+        C : Complex -- A complex whose homology groups are the representation homology groups
+    Description
+        Text
+            This is the option to change the variable names in the matrices.
+            {\em We do NOT suggest to use this option unless it causes huge confusion.}
+        Example
+            surfaceRepHomologyComplexAlg(3, 1, AlgType=>"n", Variables=>{a,b,c,d})
 ///
 
 doc ///
@@ -1399,11 +1540,13 @@ doc ///
     Inputs
         matrixSize : ZZ
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
              This is the function to compute Lie algebra type representation homology of the torus directly. There is one input, the size of matrices $n$.
              One could also change the coefficient ring and the algebra type. A algebra type could be "gl" (default), "sl", "borel" ("b" for short), or "nilpotent" ("n" for short).
+
+            The representation homology is the algebraic information of the equivalent derived objects which are so-called derived local systems, or derived representation schemes. Please see @HREF("https://arxiv.org/abs/2403.13953", "this article")@ for more detailed introduction, the complex to perform the computation, and the theoretical definitions.
         Example
             torusRepHomologyLie(2)
         Text
@@ -1427,11 +1570,13 @@ doc ///
     Inputs
         matrixSize : ZZ
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
              This is the function to return the chain complex computing the algebra type representation homology of a surface. There is one input, the size of matrices $n$.
              One could also change the coefficient ring and the algebra type. A algebra type could be "gl" (default), "sl", "borel" ("b" for short), or "nilpotent" ("n" for short).
+
+            The representation homology is the algebraic information of the equivalent derived objects which are so-called derived local systems, or derived representation schemes. Please see @HREF("https://arxiv.org/abs/2403.13953", "this article")@ for more detailed introduction, the complex to perform the computation, and the theoretical definitions.
         Example
             torusRepHomologyComplexLie(2)
         Text
@@ -1455,7 +1600,7 @@ doc ///
         matrixSize : ZZ
         s : String
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
             This is the option to change the Lie algebra type coefficient. A Lie algebra type could be "gl" (default), "sl", "borel" ("b" for short), and "nilpotent" ("n" for short), or "BnNil", "CnNil", "DnNil", "G2Nil".
@@ -1474,7 +1619,7 @@ doc ///
         matrixSize : ZZ
         s : String
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
             This is the option to change the Lie algebra type coefficient. A Lie algebra type could be "gl" (default), "sl", "Borel" ("b" for short), and "nilpotent" ("n" for short), or "BnNil", "CnNil", "DnNil", "G2Nil".
@@ -1493,7 +1638,7 @@ doc ///
         matrixSize : ZZ
         kk : Ring
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
             This is the option to change the ground ring of the Lie algebra type coefficient. The default value is $\mathbb{Q}$.
@@ -1512,7 +1657,7 @@ doc ///
         matrixSize : ZZ
         kk : Ring
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
             This is the option to change the ground ring of the Lie algebra type coefficient. The default value is $\mathbb{Q}$.
@@ -1531,7 +1676,7 @@ doc ///
         matrixSize : ZZ
         B : Boolean
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
             When the Lie algebra type is borel or nilpotent, the algebra coefficient could be set homogeneous. This is the option to set whether the algebra coefficient is homogeneous, i.e. whether the ideal to cut out the variety given by the algebra is homogeneous.
@@ -1550,12 +1695,52 @@ doc ///
         matrixSize : ZZ
         B : Boolean
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
             When the Lie algebra type is borel or unipotent, the algebra coefficient could be set homogeneous. This is the option to set whether the algebra coefficient is homogeneous, i.e. whether the ideal to cut out the variety given by the algebra is homogeneous.
         Example
             torusRepHomologyComplexLie(3, LieType=>"n", Homogenize=>true)
+///
+
+doc ///
+    Key
+        [torusRepHomologyLie, Variables]
+    Headline
+        Option to change the variable names in matrices
+    Usage
+        lst =  torusRepHomologyLie(matrixSize, Variables=>L)
+    Inputs
+        matrixSize : ZZ
+        L : List -- Default {getSymbol "x", getSymbol "y", getSymbol "s", getSymbol "t"}
+    Outputs
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
+    Description
+        Text
+            This is the option to change the variable names in the matrices.
+            {\em We do NOT suggest to use this option unless it causes huge confusion.}
+        Example
+            torusRepHomologyLie(3, LieType=>"n", Variables=>{a,b,c,d})
+///
+
+doc ///
+    Key
+        [torusRepHomologyComplexLie, Variables]
+    Headline
+        Option to change the variable names in matrices
+    Usage
+        C =  torusRepHomologyComplexLie(matrixSize, Variables=>L)
+    Inputs
+        matrixSize : ZZ
+        L : List -- Default {getSymbol "x", getSymbol "y", getSymbol "s", getSymbol "t"}
+    Outputs
+        C : Complex -- A complex whose homology groups are the representation homology groups
+    Description
+        Text
+            This is the option to change the variable names in the matrices.
+            {\em We do NOT suggest to use this option unless it causes huge confusion.}
+        Example
+            torusRepHomologyComplexLie(3, LieType=>"n", Variables=>{a,b,c,d})
 ///
 
 doc ///
@@ -1570,11 +1755,13 @@ doc ///
         L : Link
         matrixSize : ZZ
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
              This is the function to compute group type representation homology of a link $L$ directly. There are two inputs, the link $L$ and the size of matrices $n$.
              One could also change the coefficient ring and the group type. A group type could be "GL" (default), "SL", "Borel" ("B" for short), or "Unipotent" ("U" for short).
+
+            The representation homology is the algebraic information of the equivalent derived objects which are so-called derived local systems, or derived representation schemes. Please see @HREF("https://arxiv.org/abs/2403.13953", "this article")@ for more detailed introduction, the complex to perform the computation, and the theoretical definitions.
         Example
             linkRepHomology(link(1,{}),2)
     SeeAlso
@@ -1595,11 +1782,13 @@ doc ///
         L : Link
         matrixSize : ZZ
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
             This is the function to return the chain complex computing the group type representation homology of a link $L$. There are two inputs, the link $L$ and the size of matrices $n$.
             One could also change the coefficient ring and the group type. A group type could be "GL" (default), "SL", "Borel" ("B" for short), or "Unipotent" ("U" for short).
+
+            The representation homology is the algebraic information of the equivalent derived objects which are so-called derived local systems, or derived representation schemes. Please see @HREF("https://arxiv.org/abs/2403.13953", "this article")@ for more detailed introduction, the complex to perform the computation, and the theoretical definitions.
         Example
             linkRepHomologyComplex(link(1,{}),2)
     SeeAlso
@@ -1620,7 +1809,7 @@ doc ///
         matrixSize : ZZ
         s : String
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
             This is the option to change the group type coefficient. A group type could be "GL" (default), "SL", "Borel" ("B" for short), or "Unipotent" ("U" for short).
@@ -1640,7 +1829,7 @@ doc ///
         matrixSize : ZZ
         s : String
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
             This is the option to change the group type coefficient. A group type could be "GL" (default), "SL", "Borel" ("B" for short), or "Unipotent" ("U" for short).
@@ -1660,7 +1849,7 @@ doc ///
         matrixSize : ZZ
         kk : Ring
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
             This is the option to change the ground ring of the group type coefficient. The default value is $\mathbb{Q}$.
@@ -1680,7 +1869,7 @@ doc ///
         matrixSize : ZZ
         kk : Ring
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
             This is the option to change the ground ring of the group type coefficient. The default value is $\mathbb{Q}$.
@@ -1700,7 +1889,7 @@ doc ///
         matrixSize : ZZ
         B : Boolean
     Outputs
-        lst : List
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
     Description
         Text
             When the group type is Borel or unipotent, the group coefficient could be set homogeneous. This is the option to set whether the group coefficient is homogeneous, i.e. whether the ideal to cut out the variety given by the group is homogeneous.
@@ -1720,12 +1909,54 @@ doc ///
         matrixSize : ZZ
         B : Boolean
     Outputs
-        C : Complex
+        C : Complex -- A complex whose homology groups are the representation homology groups
     Description
         Text
             When the group type is Borel or unipotent, the group coefficient could be set homogeneous. This is the option to set whether the group coefficient is homogeneous, i.e. whether the ideal to cut out the variety given by the group is homogeneous.
         Example
             linkRepHomologyComplex(Trefoil, 3, GroupType=>"U", Homogenize=>true)
+///
+
+doc ///
+    Key
+        [linkRepHomology, Variables]
+    Headline
+        Option to change the variable names in matrices
+    Usage
+        lst =  linkRepHomology(L, matrixSize, Variables=>L)
+    Inputs
+        L : Link
+        matrixSize : ZZ
+        L : List -- Default {getSymbol "x", getSymbol "y", getSymbol "s", getSymbol "t"}
+    Outputs
+        lst : List -- list of homology groups starting from H_0, till the last one which is nonzero
+    Description
+        Text
+            This is the option to change the variable names in the matrices.
+            {\em We do NOT suggest to use this option unless it causes huge confusion.}
+        Example
+            linkRepHomology(link(1,{}), 2, Variables=>{a,b,c,d})
+///
+
+doc ///
+    Key
+        [linkRepHomologyComplex, Variables]
+    Headline
+        Option to change the variable names in matrices
+    Usage
+        C =  linkRepHomologyComplex(L, matrixSize, Variables=>L)
+    Inputs
+        L : Link
+        matrixSize : ZZ
+        L : List -- Default {getSymbol "x", getSymbol "y", getSymbol "s", getSymbol "t"}
+    Outputs
+        C : Complex -- A complex whose homology groups are the representation homology groups
+    Description
+        Text
+            This is the option to change the variable names in the matrices.
+            {\em We do NOT suggest to use this option unless it causes huge confusion.}
+        Example
+            linkRepHomologyComplex(link(1,{}), 2, Variables=>{a,b,c,d})
 ///
 
 TEST ///
